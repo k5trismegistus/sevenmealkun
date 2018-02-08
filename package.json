@@ -1,0 +1,31 @@
+{
+  "name": "sevenmealkun",
+  "version": "1.0.0",
+  "description": "Order seven meal from slack",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint ./src",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/k5trismegistus/sevenmealkun.git"
+  },
+  "author": "Keigo Yamamoto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/k5trismegistus/sevenmealkun/issues"
+  },
+  "homepage": "https://github.com/k5trismegistus/sevenmealkun#readme",
+  "dependencies": {
+    "eslint": "^4.17.0",
+    "puppeteer": "^1.0.0"
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^6.0.0",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1"
+  }
+}
