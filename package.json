@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/k5trismegistus/sevenmealkun#readme",
   "dependencies": {
+    "botkit": "^0.6.9",
     "eslint": "^4.17.0",
     "puppeteer": "^1.0.0"
   },
