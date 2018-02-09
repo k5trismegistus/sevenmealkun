@@ -22,6 +22,23 @@ const validUser = (userId) => {
   return (userId === setting.userId)
 }
 
+const parseDate = (str) => {
+  let month
+  let date
+  if (str === 'menu') {
+    const today = new Date()
+    const tommorow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
+
+    month = tommorow.getMonth() + 1
+    date = tommorow.getDate()
+  } else if (/menu \d+\/\d+/.test(str)) {
+    month = parseInt(str.match(/menu (\d+)\/\d+/)[1])
+    date = parseInt(str.match(/menu \d+\/(\d+)/)[1])
+  }
+
+  return { month, date }
+}
+
 controller.hears('ping', ['direct_message', 'mention', 'direct_mention'], async (bot, message) => {
   if (!validUser(message.user)) {
     bot.reply(message, 'あなたは有効なユーザーではありません')
@@ -39,23 +56,13 @@ controller.hears('menu', ['direct_message', 'mention', 'direct_mention'], async 
     return
   }
 
-  let month
-  let date
-  if (message.text === 'menu') {
-    const today = new Date()
-    const tommorow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
-
-    month = tommorow.getMonth() + 1
-    date = tommorow.getDate()
-  } else if (/menu \d+\/\d+/.test(message.text)) {
-    month = parseInt(message.text.match(/menu (\d+)\/\d+/)[1])
-    date = parseInt(message.text.match(/menu \d+\/(\d+)/)[1])
-  }
+  const { month, date } = parseDate(message.text)
 
   try {
     const menu = await getMenu(month, date)
     bot.reply(message, menu.toSlack())
   } catch (e) {
+    console.log(e)
     bot.reply(message, 'その日のメニューはみつからなかったよ…')
   }
 })

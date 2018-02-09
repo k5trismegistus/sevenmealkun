@@ -1,5 +1,6 @@
 const {MenuListScene} = require('../scenes/menuListScene')
 
+const {RiceAmounts, RiceTypes} = require('../constants/menuConstants')
 const {createPage} = require('../utils/createPage')
 
 const getMenu = async (month, date) => {
@@ -9,12 +10,18 @@ const getMenu = async (month, date) => {
 
   const page = await createPage()
 
+  const riceAmounts = RiceAmounts.less
+
   const scene = new MenuListScene(page)
 
-  const menuList = await scene.getMenuList()
+  const menuList = await scene.getMenuList(riceAmounts)
 
   // todo ごはんの種類対応
-  return menuList.filter((menu) => (year === menu.year && month === menu.month && date === menu.date))[0]
+  const target = menuList
+    .filter((menu) => (year === menu.year && month === menu.month && date === menu.date))
+    .filter((menu) => (menu.riceType === RiceTypes.cereals))[0]
+
+  return target
 }
 
 module.exports = { getMenu }

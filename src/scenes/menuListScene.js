@@ -2,9 +2,11 @@ const {BaseScene} = require('./baseScene')
 
 const {Menu} = require('../models/menu')
 
+const {RiceAmounts, RiceTypes} = require('../constants/menuConstants')
+
 class MenuListScene extends BaseScene {
-  async getMenuList () {
-    // todo ごはんの量対応
+  // todo ごはんの量対応
+  async getMenuList (riceAmount) {
     await this.page.goto('https://7-11net.omni7.jp/basic/0501001003003000')
 
     await this.page.waitForSelector('.mod-shoppingContents_item')
@@ -23,11 +25,24 @@ class MenuListScene extends BaseScene {
         const date = parseInt(rawMenuString.match(/(\d+)日/)[1])
         const year = (month >= (new Date()).getMonth() + 1) ? (new Date()).getFullYear() : (new Date()).getFullYear() + 1
 
-        const menu = { menuName, menuLink, menuImage, year, month, date }
+        const isCereals = /雑穀米/.test(rawMenuString)
+
+        const menu = { menuName, menuLink, menuImage, year, month, date, isCereals }
         return menu
       })
     })
-    const menuList = rawMenuList.map((rawMenu) => new Menu(rawMenu.menuName, rawMenu.menuLink, rawMenu.menuImage, rawMenu.year, rawMenu.month, rawMenu.date))
+    const menuList = rawMenuList.map((rawMenu) =>
+      new Menu(
+        rawMenu.menuName,
+        rawMenu.menuLink,
+        rawMenu.menuImage,
+        rawMenu.year,
+        rawMenu.month,
+        rawMenu.date,
+        riceAmount,
+        rawMenu.isCereals ? RiceTypes.cereals : RiceTypes.normal
+      )
+    )
 
     return menuList
   }

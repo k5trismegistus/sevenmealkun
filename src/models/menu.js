@@ -1,11 +1,13 @@
 class Menu {
-  constructor (menuName, pageUrl, imageUrl, year, month, date) {
+  constructor (menuName, pageUrl, imageUrl, year, month, date, riceAmount, riceType) {
     this.menuName = menuName
     this.pageUrl = pageUrl
     this.imageUrl = imageUrl
     this.year = year
     this.month = month
     this.date = date
+    this.riceAmount = riceAmount
+    this.riceType = riceType
   }
 
   toSlack () {
