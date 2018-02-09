@@ -10,9 +10,17 @@ class Menu {
     this.riceType = riceType
   }
 
-  toSlack () {
+  messageDescription () {
     const str = `
     ${this.month}/${this.date}のメニューは${this.menuName}です
+    ${this.imageUrl}
+    `
+    return str
+  }
+
+  messageOrdered () {
+    const str = `
+    ${this.month}/${this.date}の${this.menuName}を注文しました
     ${this.imageUrl}
     `
     return str
