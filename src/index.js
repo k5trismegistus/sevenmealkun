@@ -2,6 +2,7 @@ const setting = require('../config.json')
 const Botkit = require('botkit')
 
 const {test} = require('./services/test')
+const {getMenu} = require('./services/getMenu')
 
 
 const controller = Botkit.slackbot({
@@ -32,6 +33,32 @@ controller.hears('ping', ['direct_message', 'mention', 'direct_mention'], async 
   bot.reply(message, message)
 })
 
+controller.hears('menu', ['direct_message', 'mention', 'direct_mention'], async (bot, message) => {
+  if (!validUser(message.user)) {
+    bot.reply(message, 'あなたは有効なユーザーではありません')
+    return
+  }
+
+  let month
+  let date
+  if (message.text === 'menu') {
+    const today = new Date()
+    const tommorow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
+
+    month = tommorow.getMonth() + 1
+    date = tommorow.getDate()
+  } else if (/menu \d+\/\d+/.test(message.text)) {
+    month = parseInt(message.text.match(/menu (\d+)\/\d+/)[1])
+    date = parseInt(message.text.match(/menu \d+\/(\d+)/)[1])
+  }
+
+  try {
+    const menu = await getMenu(month, date)
+    bot.reply(message, menu.toSlack())
+  } catch (e) {
+    bot.reply(message, 'その日のメニューはみつからなかったよ…')
+  }
+})
 // controller.hears('menu', ['direct_message', 'mention', 'direct_mention'], async (bot, message) => {
 //   bot.reply(message, 'Please be patient...')
 //   const r = await getMenuToShow()
@@ -72,21 +99,7 @@ controller.hears('ping', ['direct_message', 'mention', 'direct_mention'], async 
 // }
 
 // const getRawMenus = async (page) => {
-//   await page.goto('https://7-11net.omni7.jp/basic/0501001003003000')
 
-//   await page.waitForSelector('.mod-shoppingContents_item')
-
-//   const rawMenus = await page.evaluate(() => {
-//     const containers = Array.from(document.querySelectorAll('.mod-shoppingContents_item'))
-//     return containers.map(c => {
-//       const menuName = Array.from(c.querySelectorAll('.u-hoverLink'))[0]
-//         .innerText.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 65248))
-//       const menuLink = Array.from(c.querySelectorAll('.u-hoverLink'))[0].href
-//       const menuImage = Array.from(c.querySelectorAll('.u-img'))[0].src
-//       return { menuName, menuLink, menuImage }
-//     })
-//   })
-//   return rawMenus
 // }
 
 // const tomorrowMenu = (rawMenus) => {
